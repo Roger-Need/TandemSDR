@@ -1,5 +1,5 @@
 <!--
-  TandemSDR v1.0
+  TandemSDR v1.1
   Copyright (c) 2026 Roger Need
 
   This program is free software: you can redistribute it and/or
@@ -471,11 +471,14 @@ input[type="range"]:disabled::-moz-range-thumb {
 <body>
     <div class="container">
         <header>
-            <h1>TandemSDR &nbsp;<span style="font-size:0.6em; color:#8b949e;">v1.0</span></h1>
+            <h1>TandemSDR &nbsp;<span style="font-size:0.6em; color:#8b949e;">v1.1</span></h1>
             <div class="connection-control">
                 <div class="connection-status disconnected" id="connectionStatus">● Disconnected</div>
                 <div class="connection-input-group">
-                    <input type="text" id="ipAddress" class="ip-input" value="127.0.0.1" placeholder="IP Address">
+                    <div style="position:relative; display:inline-block;">
+                        <input type="text" id="ipAddress" class="ip-input" value="" placeholder="IP Address" autocomplete="off">
+                        <div id="ipDropdown" style="display:none; position:absolute; top:100%; left:0; width:100%; background:#1c2128; border:1px solid #373e47; border-radius:8px; z-index:100; margin-top:2px;"></div>
+                    </div>
                     <input type="text" id="portSelect" class="ip-input" value="5454" placeholder="Port" style="width:70px;">
                     <button id="connectBtn" class="connect-btn" onclick="toggleConnection()">Connect</button>
                     <button id="helpBtn" onclick="openHelpModal()" title="Help (H or ?)" style="margin-left:5px;">?</button>
@@ -1008,6 +1011,11 @@ input[type="range"]:disabled::-moz-range-thumb {
             updateButtonStates();
             // Init fill for all range sliders on load
             document.querySelectorAll('input[type="range"]').forEach(s => updateSliderFill(s));
+            // Restore last used IP address, default to 127.0.0.1
+            const savedIPs = loadIPHistory();
+            document.getElementById('ipAddress').value = savedIPs.length ? savedIPs[0] : '127.0.0.1';
+            document.getElementById('ipAddress').addEventListener('focus', renderIPDropdown);
+            document.getElementById('ipAddress').addEventListener('blur', () => setTimeout(() => document.getElementById('ipDropdown').style.display = 'none', 150));
         };
 
         // Stop spectrum drag if mouse released outside canvas
@@ -1053,21 +1061,21 @@ input[type="range"]:disabled::-moz-range-thumb {
                 return;
             }
             // Handle inputs and selects
-if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
-    if (e.key === 'Escape') { e.target.blur(); return; }
-    // Only apply numeric restriction when connected (IP/port fields are only used when disconnected)
-    const isConnected = ws && ws.readyState === WebSocket.OPEN;
-    if (isConnected && e.target.tagName === 'INPUT') {
-        const allowed = ['0','1','2','3','4','5','6','7','8','9','.','-','Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter'];
-        if (allowed.includes(e.key)) {
-            if (e.key === 'Enter') setTimeout(() => e.target.blur(), 0);
-            return;
-        }
-    // Block everything else (including hotkeys)
-        e.preventDefault();
-    }
-    return;
-}
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+                if (e.key === 'Escape') { e.target.blur(); return; }
+                // Only apply numeric restriction when connected (IP/port fields are only used when disconnected)
+                const isConnected = ws && ws.readyState === WebSocket.OPEN;
+                if (isConnected && e.target.tagName === 'INPUT') {
+                    const allowed = ['0','1','2','3','4','5','6','7','8','9','.','-','Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter'];
+                    if (allowed.includes(e.key)) {
+                        if (e.key === 'Enter') setTimeout(() => e.target.blur(), 0);
+                        return;
+                    }
+                    // Block everything else (including hotkeys)
+                    e.preventDefault();
+                }
+                return;
+            }
             const key = e.key;
             const upper = key.toUpperCase();
             const isConnected = ws && ws.readyState === WebSocket.OPEN;
@@ -1221,6 +1229,40 @@ if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.ta
             });
         }
 
+        function loadIPHistory() {
+            return JSON.parse(localStorage.getItem('ipHistory') || '[]');
+        }
+
+        function saveIPToHistory(ip) {
+            let history = loadIPHistory();
+            history = history.filter(h => h !== ip);  // remove duplicate
+            history.unshift(ip);                        // add to top
+            if (history.length > 5) history.pop();      // cap at 5
+            localStorage.setItem('ipHistory', JSON.stringify(history));
+        }
+
+        function renderIPDropdown() {
+            const history = loadIPHistory();
+            const dropdown = document.getElementById('ipDropdown');
+            if (!history.length) { dropdown.style.display = 'none'; return; }
+            dropdown.innerHTML = history.map(ip => `
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 10px; cursor:pointer; font-size:0.9em; color:#e6e6e6;"
+                     onmouseenter="this.style.background='#2d333b'" onmouseleave="this.style.background='transparent'">
+                    <span onclick="document.getElementById('ipAddress').value='${ip}'; document.getElementById('ipDropdown').style.display='none';"
+                          style="flex:1;">${ip}</span>
+                    <span onclick="removeIPFromHistory('${ip}')" style="color:#8b949e; margin-left:10px; font-size:0.85em;">✕</span>
+                </div>
+            `).join('');
+            dropdown.style.display = 'block';
+        }
+
+        function removeIPFromHistory(ip) {
+            let history = loadIPHistory();
+            history = history.filter(h => h !== ip);
+            localStorage.setItem('ipHistory', JSON.stringify(history));
+            renderIPDropdown();
+        }
+
         function connect() {
             const ipAddress = document.getElementById('ipAddress').value.trim();
             if (!ipAddress) {
@@ -1228,6 +1270,7 @@ if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.ta
                 return;
             }
             
+            saveIPToHistory(ipAddress);
             updateStatus('connecting');
             
             try {
@@ -1249,6 +1292,7 @@ if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.ta
                     // Enable device stream
                     sendCommand('device_stream_enable', '', 'true');
                     sendCommand('audio_stream_enable', '', 'true'); // always stream audio
+                    sendCommand('set_property', 'audio_mute', 'true');
                     initAudio();
                     
                     // Request current device state - sample rate first, then frequency, then mode

@@ -1,6 +1,6 @@
-# TandemSDR v1.0
+# TandemSDR v1.1
 
-TandemSDR is a self-contained SDR receiver front-end that runs entirely in a browser with no installation required. It connects to SDRplay's SDRconnect software via WebSocket and provides a full receiver control interface including spectrum display, waterfall, audio output, signal metering (dBm and SNR), and signal history charting.
+TandemSDR is a self-contained SDR remote control that runs entirely in a browser with no installation required. It links to SDRplay's SDRconnect software via WebSocket and provides a full receiver control interface including spectrum display, waterfall, audio output, signal metering (dBm and SNR), and signal history charting.
 
 ## Features
 
@@ -8,7 +8,9 @@ TandemSDR is a self-contained SDR receiver front-end that runs entirely in a bro
 
   - Connects to SDRconnect running locally or on a network.
 
-  - Default connection: 127.0.0.1 port 5454 (both configurable).
+  - Default connection: 127.0.0.1 port 5454 (both configurable).  A hostname like *labcomputer *can also be used if SDRconnect is Windows admin mode.
+
+  - *IP addresses and names are saved in browser local storage and survive page reloads.  Accessible from dropdown menu.
 
   - Will connect over the WAN if router has port 5454 forwarding enabled.
 
@@ -53,6 +55,8 @@ TandemSDR is a self-contained SDR receiver front-end that runs entirely in a bro
   - Stereo on/off toggle with stereo indicator.
 
 - **Audio**
+
+  - Audio in SDRconnect is muted after TandemSDR is connected.
 
   - Audio streamed from SDRconnect and decoded in the browser via the Web Audio API.
 
@@ -136,7 +140,7 @@ TandemSDR is a self-contained SDR receiver front-end that runs entirely in a bro
 
 - **Memory**
 
-  - 10 memory slots for saving and recalling receiver settings.
+  - 10 memory slots for saving and recalling receiver settings. 
 
   - Each slot stores VFO frequency, center frequency, mode, filter bandwidth, sample rate, antenna, RF gain, step size, volume, and spectrum display settings (reference level, base level, zoom, averaging, snap).
 
@@ -152,7 +156,7 @@ TandemSDR is a self-contained SDR receiver front-end that runs entirely in a bro
 
   - Covers Amateur Radio (160 m through 33 cm), Shortwave Broadcast (120 m through 11 m), and Broadcast (AM and FM).
 
-- **Keyboard Shortcuts**
+- **Keyboard Shortcuts** (hotkeys)
 
 | Key | Action |
 | - | - |
@@ -191,9 +195,9 @@ TandemSDR is a self-contained SDR receiver front-end that runs entirely in a bro
 
 ## Requirements
 
-- No installation and no internet connection required. Open the HTML file directly in your browser 
+- No installation and no internet connection required. Open the HTML file directly in your browser
 
-- **SDRplay SDRconnect** must be running with WebSocket access enabled on port 5454 (default).
+- **SDRplay SDRconnect** must be running with WebSocket access enabled on port 5454
 
 - Compatible with any SDRplay RSP device supported by SDRconnect.
 
@@ -201,7 +205,7 @@ TandemSDR is a self-contained SDR receiver front-end that runs entirely in a bro
 
 ## Typical Workflow
 
-1. Start **SDRconnect** and ensure it is running with WebSocket enabled.
+1. Start **SDRconnect** and ensure it is running with WebSocket enabled. See image below
 
 2. Open **TandemSDR** by double-clicking the HTML file in your browser.
 
@@ -213,11 +217,13 @@ TandemSDR is a self-contained SDR receiver front-end that runs entirely in a bro
 
 6. Select a demodulation **Mode** and adjust **Filter BW** as needed.
 
-7. Adjust **RF Gain**, **Volume**, **Noise Reduction**, and **Squelch** to taste.
+7. Adjust **RF Gain**, **Volume**, **Noise Reduction**, and **Squelch** as desired.
 
 8. Click **Show** under Spectrum Display to enable the spectrum and waterfall.
 
 9. Use **Signal History** to capture and export signal power or SNR over time.
+
+10.  Hotkeys (listed above) allow quick changes to features and parameters. 
 
 ## License
 
@@ -230,4 +236,10 @@ You must:
 - Release any modifications or derivative works under GPLv3 (or later).
 
 See [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html) for the full license text.
+
+
+
+
+**\*\* Enable WebSocket in SDRconnect before using program. ** 
+
 
