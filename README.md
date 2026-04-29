@@ -1,6 +1,6 @@
-# TandemSDR v1.1
+# TandemSDR v1.2
 
-TandemSDR is a self-contained SDR remote control that runs entirely in a browser with no installation required. It links to SDRplay's SDRconnect software via WebSocket and provides a full receiver control interface including spectrum display, waterfall, audio output, signal metering (dBm and SNR), and signal history charting.
+TandemSDR is a self-contained SDR remote control that runs entirely in a browser with no installation required. It links to SDRplay's SDRconnect software via WebSocket and provides a full receiver control interface including spectrum display, waterfall, audio output, signal metering (dBm and SNR), and signal history charting.  Program is open source and may be modified and redistributed under GPL v3.
 
 ## Features
 
@@ -8,9 +8,9 @@ TandemSDR is a self-contained SDR remote control that runs entirely in a browser
 
   - Connects to SDRconnect running locally or on a network.
 
-  - Default connection: 127.0.0.1 port 5454 (both configurable).  A hostname like *labcomputer *can also be used if SDRconnect is Windows admin mode.
+  - Default connection: 127.0.0.1 port 5454 (both configurable).  A hostname like \*labcomputer \*can also be used if SDRconnect is in Windows admin mode.
 
-  - *IP addresses and names are saved in browser local storage and survive page reloads.  Accessible from dropdown menu.
+  - \*IP addresses and names are saved in browser local storage and survive page reloads.  Accessible from dropdown menu.  Backup and restore to json file.
 
   - Will connect over the WAN if router has port 5454 forwarding enabled.
 
@@ -24,7 +24,7 @@ TandemSDR is a self-contained SDR remote control that runs entirely in a browser
 
   - Hold-to-repeat step buttons and mouse scroll wheel for VFO tuning. Step buttons accelerate the longer they are held.
 
-  - Selectable step size: 10 Hz, 100 Hz, 500 Hz, 1 kHz, 2.5 kHz, 5 kHz, 10 kHz, 12.5 kHz, 25 kHz, 100 kHz.
+  - Selectable step size: 10 Hz, 100 Hz, 500 Hz, 1 kHz, 2.5 kHz, 5 kHz, 9 kHz, 10 kHz, 12.5 kHz, 25 kHz, 100 kHz.
 
   - Hold-to-repeat step buttons for Center frequency using the selected step size.
 
@@ -58,7 +58,7 @@ TandemSDR is a self-contained SDR remote control that runs entirely in a browser
 
   - Audio in SDRconnect is muted after TandemSDR is connected.
 
-  - Audio streamed from SDRconnect and decoded in the browser via the Web Audio API.
+  - Audio streamed from SDRconnect as packets and decoded in the browser via the Web Audio API.
 
   - Volume control slider with mute toggle button.
 
@@ -140,13 +140,11 @@ TandemSDR is a self-contained SDR remote control that runs entirely in a browser
 
 - **Memory**
 
-  - 10 memory slots for saving and recalling receiver settings. 
+  - 10 memory slots for saving and recalling receiver settings.
 
   - Each slot stores VFO frequency, center frequency, mode, filter bandwidth, sample rate, antenna, RF gain, step size, volume, and spectrum display settings (reference level, base level, zoom, averaging, snap).
 
-  - Slots are saved in browser local storage and survive page reloads.
-
-  - Individual slots can be cleared from the memory modal.
+  - Slots are saved in browser local storage and survive page reloads.  Backup and restore buttons save memories in a json file.
 
 - **Band Selector**
 
@@ -223,7 +221,7 @@ TandemSDR is a self-contained SDR remote control that runs entirely in a browser
 
 9. Use **Signal History** to capture and export signal power or SNR over time.
 
-10.  Hotkeys (listed above) allow quick changes to features and parameters. 
+10. Hotkeys (listed above) allow quick changes to features and parameters.
 
 ## License
 
@@ -237,9 +235,5 @@ You must:
 
 See [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html) for the full license text.
 
-
-
-
-**\*\* Enable WebSocket in SDRconnect before using program. ** 
-
+\*\*\*\* Enable WebSocket in SDRconnect before using program. \*\*
 
